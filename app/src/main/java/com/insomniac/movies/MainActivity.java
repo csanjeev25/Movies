@@ -3,8 +3,6 @@ package com.insomniac.movies;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import rx.schedulers.Schedulers;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override

@@ -1,7 +1,8 @@
 package com.insomniac.movies;
 
+import io.reactivex.Observable;
 import retrofit2.http.GET;
-import rx.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Sanjeev on 1/25/2018.
