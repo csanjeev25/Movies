@@ -12,10 +12,12 @@ import android.view.ViewGroup;
 
 import com.insomniac.movies.databinding.FragmentNowPlayingBinding;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -27,11 +29,16 @@ public class NowPlayingFragment extends Fragment{
     private FragmentNowPlayingBinding mFragmentNowPlayingBinding;
     private List<Movie> mMovieList = Collections.emptyList();
     private MovieAPI mMovieAPI;
+    private CompositeDisposable mCompositeDisposable;
+    private MovieViewModel mMovieViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMovieAPI = RetrofitClient.getRetofitClient().create(MovieAPI.class);
+        setRetainInstance(true);
+        mCompositeDisposable = new CompositeDisposable();
+        mMovieViewModel = new MovieViewModel();
     }
 
     @Nullable
@@ -42,15 +49,38 @@ public class NowPlayingFragment extends Fragment{
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("data",new ArrayList<>(mMovieList));
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFragmentNowPlayingBinding.nowPlayingList.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
-        mMovieAPI.nowPlaying()
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(movieWrapper -> {
-                    this.mMovieList = movieWrapper.getResults();
-                    mFragmentNowPlayingBinding.nowPlayingList.setAdapter(new NowPlayingAdapter(mMovieList));
-                });
+        if(mMovieAPI == null){
+            mCompositeDisposable.add(mMovieViewModel.loadMovies()
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(movies -> {
+                mMovieList = movies;
+                mFragmentNowPlayingBinding.nowPlayingList.setAdapter(new NowPlayingAdapter(mMovieList));
+            }));
+        }else
+            mFragmentNowPlayingBinding.nowPlayingList.setAdapter(new NowPlayingAdapter(mMovieList));
+    }
+
+    public void setData(List<Movie> movies){
+        mMovieList = movies;
+    }
+
+    public List<Movie> getData(){
+        return mMovieList;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mCompositeDisposable.clear();
     }
 }

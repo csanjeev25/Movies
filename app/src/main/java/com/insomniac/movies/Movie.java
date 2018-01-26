@@ -1,5 +1,8 @@
 package com.insomniac.movies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +13,7 @@ import java.util.List;
  * Created by Sanjeev on 1/25/2018.
  */
 
-public class Movie {
+public class Movie implements Parcelable{
 
     @SerializedName("poster_path")
     @Expose
@@ -58,7 +61,35 @@ public class Movie {
 
     @SerializedName("vote_count")
     @Expose
-    private int vote_count;
+    private int voteCount;
+
+    protected Movie(Parcel in) {
+        posterPath = in.readString();
+        adult = in.readByte() != 0;
+        overview = in.readString();
+        releaseDate = in.readString();
+        id = in.readInt();
+        originalTitle = in.readString();
+        originalLanguage = in.readString();
+        title = in.readString();
+        backdropPath = in.readString();
+        popularity = in.readFloat();
+        voteCount = in.readInt();
+        video = in.readByte() != 0;
+        voteAverage = in.readFloat();
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public String getPosterPath() {
         return posterPath;
@@ -149,11 +180,11 @@ public class Movie {
     }
 
     public int getVote_count() {
-        return vote_count;
+        return voteCount;
     }
 
     public void setVote_count(int vote_count) {
-        this.vote_count = vote_count;
+        this.voteCount = vote_count;
     }
 
     public boolean isVideo() {
@@ -180,4 +211,27 @@ public class Movie {
     @SerializedName("vote_average")
     @Expose
     private float voteAverage;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(posterPath);
+        parcel.writeByte(adult ? (byte) 1 : (byte) 0);
+        parcel.writeString(overview);
+        parcel.writeString(releaseDate);
+        parcel.writeList(genreIds);
+        parcel.writeInt(id);
+        parcel.writeString(originalTitle);
+        parcel.writeString(originalLanguage);
+        parcel.writeString(title);
+        parcel.writeString(backdropPath);
+        parcel.writeFloat(popularity);
+        parcel.writeInt(this.voteCount);
+        parcel.writeByte(this.video ? (byte) 1 : (byte) 0);
+        parcel.writeFloat(voteAverage);
+    }
 }

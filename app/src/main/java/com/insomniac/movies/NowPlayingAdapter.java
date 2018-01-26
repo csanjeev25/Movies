@@ -50,7 +50,11 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.No
             mViewHolderNowPlayingBinding.setMovie(movie);
             mViewHolderNowPlayingBinding.executePendingBindings();
         }
+    }
 
-
+    public void addData(List<Movie> movieList){
+        int oldSize = mMovieList.size();
+        this.addData(movieList);
+        notifyItemChanged(oldSize);
     }
 }
