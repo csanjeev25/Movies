@@ -29,7 +29,9 @@ public class MovieViewModel {
 
         return mAPI.nowPlaying()
                 .map(MovieWrapper::getResults)
-                .doOnNext(movies1 -> {movies.onNext(movies1);
+                .doOnNext(movies1 -> {List<Movie> movieList = new ArrayList<>(movies.getValue());
+                movieList.addAll(movies1);
+                movies.onNext(movieList);
                 page++;})
                 .doOnTerminate(() -> isLoading.onNext(false));
     }

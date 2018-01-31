@@ -20,4 +20,14 @@ public class CustomBindingAdapter {
                 .fit()
                 .into(imageView);
     }
+
+    @BindingAdapter("{backdrop}")
+    public static void loadBackDropImage(ImageView imageView,String path){
+        String url = String.format("%s%s%s",BuildConfig.IMAGE_BASE_URL,"original",path);
+        Picasso.with(imageView.getContext())
+                .load(url)
+                .fit()
+                .placeholder(R.drawable.ic_movie_24dp)
+                .into(imageView);
+    }
 }

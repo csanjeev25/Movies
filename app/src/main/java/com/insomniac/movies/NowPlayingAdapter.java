@@ -1,5 +1,6 @@
 package com.insomniac.movies;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.insomniac.movies.databinding.ViewHolderNowPlayingBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +32,10 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.No
     @Override
     public void onBindViewHolder(NowPlayingAdapter.NowPlayingViewHolder holder, int position) {
         holder.bindTo(mMovieList.get(position));
+        holder.itemView.setOnClickListener(view -> {
+            Context context = holder.itemView.getContext();
+            context.startActivity(DetailMovieActivity.newIntent(context,mMovieList.get(position)));
+        });
     }
 
     @Override
@@ -52,9 +58,10 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.No
         }
     }
 
-    public void addData(List<Movie> movieList){
-        int oldSize = mMovieList.size();
-        this.addData(movieList);
-        notifyItemChanged(oldSize);
+    public void setItems(List<Movie> movieList){
+        if(movieList == null)
+            return;
+        mMovieList = new ArrayList<>(movieList);
+        notifyDataSetChanged();
     }
 }
