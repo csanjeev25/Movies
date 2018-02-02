@@ -1,11 +1,11 @@
-package com.insomniac.movies;
+package com.insomniac.moviesnow;
 
 import android.databinding.DataBindingUtil;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.insomniac.movies.databinding.ActivityMainBinding;
+import com.insomniac.moviesnow.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 

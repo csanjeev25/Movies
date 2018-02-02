@@ -1,4 +1,4 @@
-package com.insomniac.movies;
+package com.insomniac.moviesnow;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,10 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.insomniac.movies.databinding.ActivityDetailMovieBinding;
+import com.insomniac.moviesnow.databinding.ActivityDetailMovieBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -33,7 +35,7 @@ public class DetailMovieActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMovieAPI = RetrofitClient.getRetofitClient().create(MovieAPI.class);
+        mMovieAPI = RetrofitClient.getInstance().create(MovieAPI.class);
         if(getIntent() != null){
             Bundle bundle = getIntent().getExtras();
             mMovie = bundle.getParcelable(ARG_MOVIE);
@@ -69,3 +71,4 @@ public class DetailMovieActivity extends AppCompatActivity {
                 },Throwable::printStackTrace);
     }
 }
+

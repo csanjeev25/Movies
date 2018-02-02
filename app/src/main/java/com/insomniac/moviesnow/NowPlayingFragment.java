@@ -1,4 +1,4 @@
-package com.insomniac.movies;
+package com.insomniac.moviesnow;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -14,12 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.insomniac.movies.databinding.FragmentNowPlayingBinding;
+import com.insomniac.moviesnow.databinding.FragmentNowPlayingBinding;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+
+import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -45,10 +46,10 @@ public class NowPlayingFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMovieAPI = RetrofitClient.getRetofitClient().create(MovieAPI.class);
         setRetainInstance(true);
-        mCompositeDisposable = new CompositeDisposable();
+        mMovieAPI = RetrofitClient.getInstance().create(MovieAPI.class);
         mMovieViewModel = new MovieViewModel();
+        mCompositeDisposable = new CompositeDisposable();
         mHandler = new Handler();
         if(savedInstanceState != null)
             mMovieList = savedInstanceState.getParcelableArrayList(SAVE_MOVIE_LIST);
@@ -58,6 +59,7 @@ public class NowPlayingFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mFragmentNowPlayingBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_now_playing,container,false);
+        mFragmentNowPlayingBinding.swipeRefreshLayout.setRefreshing(true);
         return mFragmentNowPlayingBinding.getRoot();
     }
 
@@ -84,45 +86,45 @@ public class NowPlayingFragment extends Fragment{
 
     private void initBindings(){
         Observable<Void> infiniteScrollObservable = Observable.create(subscriber -> {
-           mFragmentNowPlayingBinding.nowPlayingList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-               @Override
-               public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                   super.onScrollStateChanged(recyclerView, newState);
-               }
+            mFragmentNowPlayingBinding.nowPlayingList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
 
-               @Override
-               public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                   int totalItemCount = mLinearLayoutManager.getItemCount();
-                   int visibleItemCount = mLinearLayoutManager.getChildCount();
-                   int firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
-                   mHandler.post(new Runnable() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    int totalItemCount = mLinearLayoutManager.getItemCount();
+                    int visibleItemCount = mLinearLayoutManager.getChildCount();
+                    int firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+                    mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             Toast.makeText(getActivity(),"onScrolled",Toast.LENGTH_SHORT).show();
                         }
                     });
-                   if((visibleItemCount + firstVisibleItem) >= totalItemCount )
-                       subscriber.onNext(null);
-               }
-           });
+                    if((visibleItemCount + firstVisibleItem) >= totalItemCount )
+                        subscriber.onNext(null);
+                }
+            });
 
-           mMovieViewModel.getMovies()
-                   .subscribeOn(Schedulers.computation())
-                   .observeOn(AndroidSchedulers.mainThread())
-                   .subscribe((movies) -> {
-                       mMovieList = movies;
-                       mNowPlayingAdapter.setItems(mMovieList);
-                       mHandler.post(new Runnable() {
-                           @Override
-                           public void run() {
-                               Toast.makeText(getActivity(),"mMovieViewModel.getMovies()",Toast.LENGTH_SHORT).show();
-                           }
-                       });
-                   });
+            mMovieViewModel.getMovies()
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe((movies) -> {
+                        mMovieList = movies;
+                        mNowPlayingAdapter.setItems(mMovieList);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(),"mMovieViewModel.getMovies()",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    });
 
-           mMovieViewModel.getIsLoading().observeOn(AndroidSchedulers.mainThread()).subscribe(aBoolean -> {
-               mFragmentNowPlayingBinding.progressBar.setVisibility(aBoolean ? View.VISIBLE: View.GONE);
-           });
+            mMovieViewModel.getIsLoading().observeOn(AndroidSchedulers.mainThread()).subscribe(aBoolean -> {
+                mFragmentNowPlayingBinding.progressBar.setVisibility(aBoolean ? View.VISIBLE: View.GONE);
+            });
         });
 
         infiniteScrollObservable.subscribe(aVoid -> loadMovies());
@@ -131,8 +133,8 @@ public class NowPlayingFragment extends Fragment{
     public void loadMovies(){
 
         mCompositeDisposable.add(mMovieViewModel.loadMovies()
-        .subscribeOn(Schedulers.computation())
-        .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> Log.d("now playing fragment", "load movies error"))
                 .subscribe());
 
@@ -154,3 +156,4 @@ public class NowPlayingFragment extends Fragment{
         mCompositeDisposable.clear();
     }
 }
+

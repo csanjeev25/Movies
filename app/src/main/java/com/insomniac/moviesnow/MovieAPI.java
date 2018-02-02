@@ -1,4 +1,4 @@
-package com.insomniac.movies;
+package com.insomniac.moviesnow;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -19,5 +19,3 @@ public interface MovieAPI {
     @GET("movie/{movieId}/videos")
     Observable<VideoWrapper> getVideos(@Path("movieId") int movieId);
 }
-
-

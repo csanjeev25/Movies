@@ -8,12 +8,12 @@
         <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@id/progress_bar"
             android:id="@+id/swipe_refresh_layout">
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/progress_bar"
             android:id="@+id/now_playing_list"/>
 
         </android.support.v4.widget.SwipeRefreshLayout>

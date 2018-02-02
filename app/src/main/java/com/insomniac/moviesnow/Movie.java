@@ -1,4 +1,4 @@
-package com.insomniac.movies;
+package com.insomniac.moviesnow;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -51,7 +51,7 @@ public class Movie implements Parcelable{
     @Expose
     private String title;
 
-    @SerializedName("backdrop_path")
+    @SerializedName("backdropPath")
     @Expose
     private String backdropPath;
 
@@ -59,7 +59,7 @@ public class Movie implements Parcelable{
     @Expose
     private float popularity;
 
-    @SerializedName("vote_count")
+    @SerializedName("voteCount")
     @Expose
     private int voteCount;
 
@@ -179,11 +179,11 @@ public class Movie implements Parcelable{
         this.popularity = popularity;
     }
 
-    public int getVote_count() {
+    public int getVoteCount() {
         return voteCount;
     }
 
-    public void setVote_count(int vote_count) {
+    public void setVoteCount(int vote_count) {
         this.voteCount = vote_count;
     }
 

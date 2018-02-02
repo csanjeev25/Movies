@@ -3,7 +3,7 @@
     <data>
         <variable
             name="movie"
-            type="com.insomniac.movies.Movie"/>
+            type="com.insomniac.moviesnow.Movie"/>
     </data>
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"

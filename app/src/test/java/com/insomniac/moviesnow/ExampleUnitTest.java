@@ -1,4 +1,4 @@
-package com.insomniac.movies;
+package com.insomniac.moviesnow;
 
 import org.junit.Test;
 

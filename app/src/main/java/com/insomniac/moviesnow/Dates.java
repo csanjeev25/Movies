@@ -1,4 +1,4 @@
-package com.insomniac.movies;
+package com.insomniac.moviesnow;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

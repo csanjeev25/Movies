@@ -4,10 +4,10 @@
 
     <data>
 
-        <import type="com.insomniac.movies.CustomBindingAdapter"/>
+        <import type="com.insomniac.moviesnow.CustomBindingAdapter"/>
         <variable
             name="movie"
-            type="com.insomniac.movies.Movie"/>
+            type="com.insomniac.moviesnow.Movie"/>
     </data>
     <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -28,7 +28,7 @@
                 android:id="@+id/movie_poster"
                 android:layout_marginEnd="16dp"
                 android:scaleType="fitStart"
-                app_poster="@{movie.backdropPath}"/>
+                poster="@{movie.backdropPath}"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -39,6 +39,7 @@
                 android:layout_toEndOf="@id/movie_poster"
                 android:ellipsize="end"
                 android:gravity="center"
+                style="@style/MovieTitle"
                 android:textStyle="italic"
                 android:text="@{movie.originalTitle}"
                 android:textAllCaps="true"

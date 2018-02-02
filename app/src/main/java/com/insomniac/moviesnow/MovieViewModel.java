@@ -1,7 +1,9 @@
-package com.insomniac.movies;
+package com.insomniac.moviesnow;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
@@ -17,8 +19,9 @@ public class MovieViewModel {
     private BehaviorSubject<Boolean> isLoading = BehaviorSubject.create();
     private MovieAPI mAPI;
 
+    @Inject
     public MovieViewModel(){
-        mAPI = RetrofitClient.getRetofitClient().create(MovieAPI.class);
+        mAPI = RetrofitClient.getInstance().create(MovieAPI.class);
     }
 
     public Observable<List<Movie>> loadMovies(){
@@ -30,9 +33,9 @@ public class MovieViewModel {
         return mAPI.nowPlaying()
                 .map(MovieWrapper::getResults)
                 .doOnNext(movies1 -> {List<Movie> movieList = new ArrayList<>(movies.getValue());
-                movieList.addAll(movies1);
-                movies.onNext(movieList);
-                page++;})
+                    movieList.addAll(movies1);
+                    movies.onNext(movieList);
+                    page++;})
                 .doOnTerminate(() -> isLoading.onNext(false));
     }
 
