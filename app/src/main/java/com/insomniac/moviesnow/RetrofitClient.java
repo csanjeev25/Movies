@@ -11,7 +11,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -37,9 +37,12 @@ public class RetrofitClient {
                                 request = request.newBuilder().url(url).build();
                                 return chain.proceed(request);
                             });
-                        retrofitClient = new Retrofit.Builder().baseUrl(BuildConfig.END_POINT).addConverterFactory(GsonConverterFactory.create())
+                        retrofitClient = new Retrofit.Builder()
+                                        .baseUrl(BuildConfig.END_POINT)
+                                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                                        .addConverterFactory(GsonConverterFactory.create())
                                         .client(okHttpClient.build())
-                                        .addCallAdapterFactory(RxJavaCallAdapterFactory.create()).build();
+                                        .build();
                     }
                 return retrofitClient;
             }

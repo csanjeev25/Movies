@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Created by Sanjeev on 1/25/2018.
@@ -42,6 +42,7 @@ public class NowPlayingFragment extends Fragment{
     private NowPlayingAdapter mNowPlayingAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private Handler mHandler;
+    private enum Irrelevant {INSTANCE;}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class NowPlayingFragment extends Fragment{
     }
 
     private void initBindings(){
-        Observable<Void> infiniteScrollObservable = Observable.create(subscriber -> {
+        Observable<Object> infiniteScrollObservable = Observable.create(subscriber -> {
             mFragmentNowPlayingBinding.nowPlayingList.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -104,7 +105,7 @@ public class NowPlayingFragment extends Fragment{
                         }
                     });
                     if((visibleItemCount + firstVisibleItem) >= totalItemCount )
-                        subscriber.onNext(null);
+                        subscriber.onNext(Irrelevant.INSTANCE);
                 }
             });
 

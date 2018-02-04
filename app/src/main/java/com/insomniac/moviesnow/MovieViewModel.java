@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 
+
 /**
  * Created by Sanjeev on 1/26/2018.
  */
@@ -15,18 +16,21 @@ import io.reactivex.subjects.BehaviorSubject;
 public class MovieViewModel {
 
     private int page = 1;
-    private BehaviorSubject<List<Movie>> movies = BehaviorSubject.create();
+    private BehaviorSubject<List<Movie>> movies;
     private BehaviorSubject<Boolean> isLoading = BehaviorSubject.create();
     private MovieAPI mAPI;
 
     @Inject
     public MovieViewModel(){
         mAPI = RetrofitClient.getInstance().create(MovieAPI.class);
+        movies = BehaviorSubject.createDefault(new ArrayList<Movie>());
+        isLoading.onNext(false);
     }
 
     public Observable<List<Movie>> loadMovies(){
-        if(isLoading.getValue())
-            return Observable.empty();
+        if(isLoading != null)
+            if(isLoading.getValue())
+                return Observable.empty();
 
         isLoading.onNext(true);
 
